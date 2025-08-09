@@ -35,12 +35,12 @@ def load_model():
     print("Failed to load model")
     return False
 
-@app.before_first_request
-def initialize_model():
-    """Ensure the model is loaded when the first request arrives (works under WSGI)."""
-    global model
-    if model is None:
-        load_model()
+# Eagerly load the model at startup (compatible with Flask 3.x and WSGI servers)
+try:
+    load_model()
+except Exception as _e:
+    # Don't crash import; requests will still return a clear error from /api/model-info
+    pass
 
 @app.route('/')
 def index():
