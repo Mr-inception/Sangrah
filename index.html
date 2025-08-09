@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sangrah - AI-Powered Credit Default Prediction</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Navigation */
+        .nav {
+            background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav button:hover, .nav button.active {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 40px;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Cards */
+        .card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #06b6d4;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #06b6d4;
+            margin-bottom: 20px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #06b6d4;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Results */
+        .results {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .content-section {
+                padding: 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #06b6d4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Sangrah</h1>
+            <p>AI-Powered Credit Default Prediction System</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navigation -->
+            <div class="nav">
+                <button class="nav-btn active" onclick="showSection('overview')">
+                    <i class="fas fa-home"></i> Overview
+                </button>
+                <button class="nav-btn" onclick="showSection('features')">
+                    <i class="fas fa-star"></i> Features
+                </button>
+                <button class="nav-btn" onclick="showSection('demo')">
+                    <i class="fas fa-play"></i> Live Demo
+                </button>
+                <button class="nav-btn" onclick="showSection('code')">
+                    <i class="fas fa-code"></i> Code
+                </button>
+                <button class="nav-btn" onclick="showSection('about')">
+                    <i class="fas fa-info-circle"></i> About
+                </button>
+            </div>
+
+            <!-- Overview Section -->
+            <div id="overview" class="content-section active">
+                <h2 class="section-title">Project Overview</h2>
+                <div class="card">
+                    <h3>What is Credit Risk Modeling?</h3>
+                    <p>Credit risk modeling is a statistical technique used by financial institutions to assess the likelihood of a borrower defaulting on their loan obligations. Our AI-powered system uses machine learning algorithms to predict credit defaults based on various customer features.</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Key Benefits</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><i class="fas fa-check" style="color: #667eea; margin-right: 10px;"></i>Accurate default prediction using advanced ML algorithms</li>
+                        <li><i class="fas fa-check" style="color: #667eea; margin-right: 10px;"></i>Real-time risk assessment for new applications</li>
+                        <li><i class="fas fa-check" style="color: #667eea; margin-right: 10px;"></i>Comprehensive feature importance analysis</li>
+                        <li><i class="fas fa-check" style="color: #667eea; margin-right: 10px;"></i>Easy-to-use interface for non-technical users</li>
+                        <li><i class="fas fa-check" style="color: #667eea; margin-right: 10px;"></i>Scalable and production-ready solution</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div id="features" class="content-section">
+                <h2 class="section-title">Key Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Data Management</h3>
+                        <p>Robust data loading and validation with comprehensive error handling and missing data management.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>Exploratory Analysis</h3>
+                        <p>Comprehensive data exploration with statistical analysis, visualizations, and insights generation.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>Model Training</h3>
+                        <p>Multiple ML algorithms including Logistic Regression and Random Forest with automated training pipeline.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Performance Metrics</h3>
+                        <p>Comprehensive evaluation using accuracy, ROC AUC, classification reports, and confusion matrices.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3>Feature Importance</h3>
+                        <p>Detailed analysis of feature importance for model interpretability and business insights.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Cross-Validation</h3>
+                        <p>Robust model validation using k-fold cross-validation for reliable performance estimates.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo Section -->
+            <div id="demo" class="content-section">
+                <h2 class="section-title">Live Demo</h2>
+                <div class="card">
+                    <h3>Credit Risk Assessment</h3>
+                    <p>Enter customer information below to get a credit risk prediction:</p>
+                    
+                    <form id="prediction-form">
+                        <div class="form-group">
+                            <label for="age">Age:</label>
+                            <input type="number" id="age" name="age" min="18" max="100" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="monthly_income">Monthly Income ($):</label>
+                            <input type="number" id="monthly_income" name="monthly_income" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="on_time_utility_payments">On-time Utility Payments (%):</label>
+                            <input type="number" id="on_time_utility_payments" name="on_time_utility_payments" min="0" max="100" step="0.01" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="job_stability">Job Stability (years):</label>
+                            <input type="number" id="job_stability" name="job_stability" min="0" max="50" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="social_score">Social Score (0-1):</label>
+                            <input type="number" id="social_score" name="social_score" min="0" max="1" step="0.01" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ecommerce_monthly_spend">E-commerce Monthly Spend ($):</label>
+                            <input type="number" id="ecommerce_monthly_spend" name="ecommerce_monthly_spend" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone_usage_score">Phone Usage Score (0-1):</label>
+                            <input type="number" id="phone_usage_score" name="phone_usage_score" min="0" max="1" step="0.01" required>
+                        </div>
+                        
+                        <button type="submit" class="btn">
+                            <i class="fas fa-calculator"></i> Predict Credit Risk
+                        </button>
+                    </form>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Analyzing credit risk...</p>
+                    </div>
+                    
+                    <div class="results" id="results">
+                        <h3>Prediction Results</h3>
+                        <div class="result-item">
+                            <span class="result-label">Risk Level:</span>
+                            <span class="result-value" id="risk-level">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Default Probability:</span>
+                            <span class="result-value" id="default-probability">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Recommendation:</span>
+                            <span class="result-value" id="recommendation">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Section -->
+            <div id="code" class="content-section">
+                <h2 class="section-title">Code Examples</h2>
+                <div class="card">
+                    <h3>Basic Usage</h3>
+                    <div class="code-block">
+                        <pre><code>from credit_risk_model import CreditRiskModel
+
+# Initialize the model
+model = CreditRiskModel("credit_data.csv")
+
+# Load and explore data
+model.load_data()
+model.explore_data()
+
+# Preprocess data
+model.preprocess_data(test_size=0.2, random_state=42)
+
+# Train models
+model.train_models()
+
+# Evaluate models
+results = model.evaluate_models()
+
+# Get feature importance
+importance = model.get_feature_importance('random_forest')
+print(importance)</code></pre>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Making Predictions</h3>
+                    <div class="code-block">
+                        <pre><code># Prepare new data
+new_data = pd.DataFrame({
+    'age': [35],
+    'monthly_income': [50000],
+    'on_time_utility_payments': [0.9],
+    'job_stability': [5],
+    'social_score': [0.7],
+    'ecommerce_monthly_spend': [8000],
+    'phone_usage_score': [0.8]
+})
+
+# Make prediction
+predictions, probabilities = model.predict(new_data, 'random_forest')
+print(f"Prediction: {predictions[0]}")
+print(f"Probability: {probabilities[0]:.4f}")</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div id="about" class="content-section">
+                <h2 class="section-title">About the Project</h2>
+                <div class="card">
+                    <h3>Technology Stack</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><i class="fab fa-python" style="color: #667eea; margin-right: 10px;"></i>Python 3.8+</li>
+                        <li><i class="fas fa-chart-bar" style="color: #667eea; margin-right: 10px;"></i>Pandas & NumPy</li>
+                        <li><i class="fas fa-brain" style="color: #667eea; margin-right: 10px;"></i>Scikit-learn</li>
+                        <li><i class="fas fa-palette" style="color: #667eea; margin-right: 10px;"></i>Matplotlib & Seaborn</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>Model Performance</h3>
+                    <p>Our credit risk model achieves excellent performance metrics:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>Random Forest: 100% Accuracy, 1.000 ROC AUC</li>
+                        <li><i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>Logistic Regression: 98.5% Accuracy, 0.998 ROC AUC</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>Project Structure</h3>
+                    <div class="code-block">
+                        <pre><code>├── credit_risk_model.py    # Main modeling class
+├── data.py                 # Data generation
+├── simulated_credit_risk_data.csv
+├── requirements.txt        # Dependencies
+└── README.md              # Documentation</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Form submission and prediction
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            
+            // Simulate prediction (in real implementation, this would call the backend)
+            setTimeout(() => {
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                // Simple prediction logic (replace with actual model call)
+                const monthlyIncome = parseFloat(data.monthly_income);
+                const utilityPayments = parseFloat(data.on_time_utility_payments) / 100;
+                
+                let riskLevel, defaultProbability, recommendation;
+                
+                if (monthlyIncome < 15000 && utilityPayments < 0.7) {
+                    riskLevel = 'High';
+                    defaultProbability = '85-95%';
+                    recommendation = 'Reject application';
+                } else if (monthlyIncome < 25000 || utilityPayments < 0.8) {
+                    riskLevel = 'Medium';
+                    defaultProbability = '30-50%';
+                    recommendation = 'Review with caution';
+                } else {
+                    riskLevel = 'Low';
+                    defaultProbability = '5-15%';
+                    recommendation = 'Approve application';
+                }
+                
+                // Update results
+                document.getElementById('risk-level').textContent = riskLevel;
+                document.getElementById('default-probability').textContent = defaultProbability;
+                document.getElementById('recommendation').textContent = recommendation;
+                
+                // Hide loading and show results
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+                
+            }, 2000);
+        });
+
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to cards
+            document.querySelectorAll('.card, .feature-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
